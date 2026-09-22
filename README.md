@@ -1,133 +1,182 @@
 # Parallax — YouTube Intelligence Hub
 
-A working local MVP for multi-brand YouTube analytics, video diagnostics, competitor intelligence, strategy opportunities, alerts and client reporting. It supports manual/live setup plus an optional five-brand demo pack that needs no external credentials.
+Parallax is a full-stack, multi-brand YouTube intelligence platform for analytics, content optimization, AI-search visibility, reporting, and channel operations. It turns channel data into prioritized actions while keeping demo, public, and authenticated data clearly separated.
 
-## Quick start
+> **Portfolio summary:** Built an end-to-end YouTube intelligence product with OAuth-secured API integrations, cross-channel analytics, Shorts and Posts optimization, AI visibility tracking, automated client reporting, scheduling, and 31 automated unit tests.
 
-Requirements: Node.js 20.9+ (Node 24 is supported) and npm.
+## Product highlights
 
-### One-click Windows start
+| Capability               | What it enables                                                                                                     |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| Multi-brand workspace    | Manage separate brands and YouTube channels from one portfolio view.                                                |
+| Channel intelligence     | Explore trends, traffic sources, search queries, audience signals, and performance drivers.                         |
+| Video diagnostics        | Search a video library and turn rule-based evidence into specific optimization actions.                             |
+| Shorts and Posts lab     | Improve hooks, retention structure, packaging, posting cadence, and community content.                              |
+| AI Visibility            | Discover keywords, check owned-video citations across search and LLM surfaces, and create LLM-ready content briefs. |
+| Competitor intelligence  | Compare public channel signals without implying access to private competitor analytics.                             |
+| Client reporting         | Build branded PDF and Excel reports, select custom date ranges, schedule delivery, and send to multiple recipients. |
+| YouTube operations       | Connect with OAuth and work with videos, playlists, comments, analytics, and live-stream resources.                 |
+| Alerts and opportunities | Score strategic opportunities and surface performance issues that need attention.                                   |
 
-Double-click `Start-Parallax.cmd` in the project folder. It checks Node/npm, performs first-run setup when needed, starts the local server and report scheduler, and opens the app automatically. Keep the terminal window open while using the app; press `Ctrl+C` to stop it.
+## Engineering highlights
 
-The PowerShell launcher can also be run directly:
+- Next.js App Router application with React, strict TypeScript, Tailwind CSS, and Recharts.
+- Server-side Google OAuth authorization-code flow with HTTP-only state cookies, AES-256-GCM token encryption, and automatic access-token refresh.
+- Replaceable provider boundaries for YouTube, trends, LLM/search, and email services.
+- Deterministic scoring and diagnostics that remain useful when generative AI providers are unavailable.
+- Shared report-selection model powering both Excel and PDF renderers.
+- Persistent local development state plus a normalized Supabase/PostgreSQL deployment schema.
+- Zod validation at mutable API boundaries and signed, HTTP-only application sessions.
+- Vitest coverage for analytics, AI visibility, reporting, scheduling, scoring, cryptography, sessions, and Shorts logic.
 
-```powershell
-.\Start-Parallax.ps1
+## Architecture
+
+```mermaid
+flowchart LR
+    U[Browser] --> A[Next.js App Router]
+    A --> UI[Dashboards and workflows]
+    A --> API[Route handlers]
+    API --> CORE[Analytics, scoring, diagnostics]
+    API --> PROVIDERS[Provider interfaces]
+    PROVIDERS --> YT[YouTube Data and Analytics APIs]
+    PROVIDERS --> AI[Search and LLM providers]
+    PROVIDERS --> MAIL[SMTP delivery]
+    API --> STATE[Local JSON or Supabase]
+    API --> REPORTS[PDF and Excel renderers]
+    WORKER[Schedule worker] --> API
 ```
 
-### Manual start
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the component map, data flows, security boundaries, and production-readiness path.
 
-```bash
+## Run locally
+
+### Requirements
+
+- Node.js 20.9 or newer; Node.js 24 LTS is supported.
+- npm, included with Node.js.
+
+### Fastest Windows setup
+
+1. Clone or download the repository.
+2. Double-click `Start-Parallax.cmd`.
+3. Keep the terminal window open while using the app.
+4. Open [http://localhost:3000](http://localhost:3000) if the browser does not open automatically.
+5. Sign in with any valid email and a password of at least eight characters in local development.
+6. Select **Set up workspace → Load 5 demo brands** for a credential-free walkthrough, or add a brand manually.
+
+The launcher checks Node/npm, completes first-run setup, starts the app and report worker, and opens the browser. Press `Ctrl+C` to stop it.
+
+### Manual setup
+
+```powershell
 npm install
-copy .env.example .env.local
+Copy-Item .env.example .env.local
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Parallax opens with its animated welcome screen and then the workspace login. In local preview, use any valid email and a password with at least eight characters. Choose **Set up workspace → Load 5 demo brands** for a presentation-ready experience, or create a brand manually to test live connections. Loading the demo pack is idempotent and does not remove manually created brands.
+In a second terminal, start the report scheduler:
 
-Run the local scheduler in a second terminal:
-
-```bash
+```powershell
 npm run worker
 ```
 
-Scheduled jobs execute only while both the computer and worker process remain on. The one-click launcher starts both processes for you.
+Scheduled jobs run only while both the application and worker are active.
 
-## What is runnable
+## Demo path
 
-- Portfolio Overview with five optional demo brands plus any manually created brands.
-- Channel dashboards with working global date/comparison filters, real charts, traffic sources, search queries and driver decomposition.
-- Searchable/filterable Videos Library plus rule/evidence-backed Video Diagnostics.
-- Public-only Competitor Intelligence and scored Strategy Opportunities.
-- AI Visibility keyword discovery, owned-video coverage, live citation checks and LLM-ready content briefs.
-- Wizard report builder with metric/section selection, reorder controls, editable/approvable AI commentary, branding preview and scheduling.
-- Valid formatted Excel and client-friendly PDF downloads whose period, comparison, metrics and sections follow the report builder selection.
-- Send-test delivery with generated Excel/PDF attachments, local preview logging by default and a real Nodemailer/SMTP adapter when configured.
-- Alert rule creation/evaluation and in-app resolution.
-- Local JSON persistence for brands, channels, demo snapshots, saved report templates, schedules, rules and OAuth connections under `data/runtime/` (gitignored).
-- Data Health, provider interfaces and live YouTube OAuth wiring.
+A short recruiter walkthrough can be completed without external credentials:
 
-## Commands
+1. Load the five synthetic demo brands during onboarding.
+2. Review the cross-brand portfolio overview and change the comparison period.
+3. Open a channel to inspect trends, traffic sources, and performance drivers.
+4. Use **Videos** and **Shorts & Posts** to review optimization recommendations.
+5. Open **AI Visibility** to generate keyword and content opportunities from owned metadata.
+6. Build a report with a custom date range, choose sections, add recipients, and export PDF or Excel.
+7. Create an alert rule and review the scored strategy opportunities.
 
-```bash
-npm run dev        # local app
-npm run worker     # scheduled jobs; app must also be running
-npm run lint       # ESLint
-npm run typecheck  # strict TypeScript
-npm test           # Vitest unit tests
-npm run test:e2e   # Playwright critical-path journey (install Chromium once; see below)
-npm run build      # production build
-npm start          # serve production build
+Demo data is synthetic and labeled. Live provider results are never silently replaced with simulated claims.
+
+## Quality checks
+
+```powershell
+npm run typecheck
+npm run lint
+npm test
+npm run build
 ```
 
-The development environment used to assemble this build exposed pnpm rather than npm, so verification may use `pnpm <script>`. The `package.json` scripts work unchanged with npm, and npm remains the documented operator path. Before the first E2E run, install Playwright's local browser with `npx playwright install chromium`.
+The repository also includes a Playwright critical-path journey:
 
-## Optional Supabase Local
+```powershell
+npx playwright install chromium
+npm run test:e2e
+```
 
-The optional demo UI does not require Supabase. To exercise PostgreSQL/auth/storage, install Docker Desktop and the Supabase CLI, then run:
+## Optional integrations
 
-```bash
+The local demo works without credentials. Copy `.env.example` to `.env.local` and configure only the providers you want to test.
+
+| Integration               | Configuration                                                                             |
+| ------------------------- | ----------------------------------------------------------------------------------------- |
+| YouTube OAuth             | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI`, `TOKEN_ENCRYPTION_KEY` |
+| Google AI Overview checks | `SERPAPI_API_KEY`                                                                         |
+| OpenAI visibility checks  | `OPENAI_API_KEY`, optional `OPENAI_MODEL`                                                 |
+| Gemini grounded checks    | `GEMINI_API_KEY`, optional `GEMINI_MODEL`                                                 |
+| SMTP delivery             | `MAIL_PROVIDER=smtp`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` |
+| Production login          | `PARALLAX_LOGIN_EMAIL`, `PARALLAX_LOGIN_PASSWORD`, `PARALLAX_SESSION_SECRET`              |
+
+### YouTube API setup
+
+1. Create or select a Google Cloud project.
+2. Enable `youtube.googleapis.com` and `youtubeanalytics.googleapis.com`. If Google Cloud CLI is installed, run `./Enable-YouTubeApis.ps1 -ProjectId "your-project-id"`.
+3. Configure the Google Auth Platform consent screen and add test users while the app is in testing.
+4. Create a **Web application** OAuth client.
+5. Add `http://localhost:3000/api/auth/youtube/callback` as an authorized redirect URI.
+6. Add the OAuth values and a strong encryption key to `.env.local`, then restart Parallax.
+7. Open **Data & Integrations**, connect YouTube, and use **Test APIs** in the YouTube operations console.
+
+The operations console supports content search, playlist management, video and comment statistics, channel branding settings, resumable uploads, analytics, and live broadcast/stream workflows. Write operations only run after an explicit user action.
+
+### Optional Supabase environment
+
+The demo UI does not require Supabase. To exercise PostgreSQL, authentication, and storage locally, install Docker Desktop and the Supabase CLI, then run:
+
+```powershell
 supabase start
 supabase db reset
 ```
 
-The migration in `supabase/migrations/` creates the brand-scoped analytics, diagnostics, opportunities, alerts, reporting, scheduling, delivery and integration tables. `supabase/seed.sql` creates the same five demo brands/channels and initial diagnostic rules.
+The migration under `supabase/migrations/` creates brand-scoped analytics, diagnostics, opportunities, alerts, reporting, scheduling, delivery, and integration tables. The seed creates the same five demo brands and channels.
 
-## YouTube API connection
+## Security and data integrity
 
-The app connects to YouTube Data API v3, YouTube Analytics API and the Live Streaming resources included in the Data API.
+- OAuth tokens stay server-side, are encrypted at rest, and never reach client JavaScript.
+- Sessions are signed, stored in HTTP-only cookies, and expire after 12 hours or 30 days when **Keep me signed in** is selected.
+- Production login fails closed until explicit credentials and a session secret are configured.
+- Competitor views use public fields only; Parallax does not imply access to private competitor analytics.
+- Unsupported or suppressed metrics are shown as unavailable instead of being estimated.
+- AI/search results are timestamped samples and provider responses remain distinguishable.
+- Secrets, runtime state, generated reports, and build output are excluded from version control.
 
-1. Create or select a Google Cloud project.
-2. Enable `youtube.googleapis.com` and `youtubeanalytics.googleapis.com` from the API Library. If Google Cloud CLI is installed, run `.\Enable-YouTubeApis.ps1 -ProjectId "your-project-id"` instead.
-3. Configure the Google Auth Platform consent screen. While the app is in testing, add every Google account that will connect a channel as a test user.
-4. Create an OAuth client with application type **Web application**.
-5. Add `http://localhost:3000/api/auth/youtube/callback` as an authorized redirect URI.
-6. Set `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` and a strong `TOKEN_ENCRYPTION_KEY` in `.env.local`, then restart the local server.
-7. Open **Data & Integrations**, choose **Connect YouTube**, approve the requested permissions and use **Test APIs** in **YouTube APIs**.
+## Useful commands
 
-The operations console supports content search, playlist creation and item management, channel/video/comment statistics, channel branding settings, resumable video uploads, channel/video/audience analytics, live broadcast and stream creation, binding, transitions and ad cuepoints. Write actions only run after a user clicks the relevant control.
+| Command             | Purpose                                |
+| ------------------- | -------------------------------------- |
+| `npm run dev`       | Start the development server.          |
+| `npm run worker`    | Run scheduled-report jobs.             |
+| `npm run typecheck` | Check strict TypeScript.               |
+| `npm run lint`      | Run ESLint with zero warnings allowed. |
+| `npm test`          | Run Vitest unit tests.                 |
+| `npm run test:e2e`  | Run the Playwright critical path.      |
+| `npm run build`     | Create a production build.             |
+| `npm start`         | Serve the production build.            |
 
-The implementation uses a server-side authorization-code flow with offline access. OAuth state is validated in an HTTP-only cookie, access/refresh material is encrypted with AES-256-GCM, expired access tokens are refreshed server-side, and tokens never reach client JavaScript. Production deployment should move token storage to a managed secrets system and add rotation, role-based access and audit policy.
+## Project status
 
-## AI Visibility providers
+Parallax is a portfolio-ready local MVP with functional dashboards, reporting, scheduling, alerts, optimization tools, provider adapters, and live YouTube integration paths. Production deployment would add managed secret storage, durable job infrastructure, organization-level authorization, centralized observability, and provider-specific quota controls.
 
-Open **AI Visibility** to discover keywords from seed terms and owned video metadata, check where owned videos appear, and generate prioritised keyword and content suggestions. The feature keeps every provider result separate and labels missing credentials instead of turning simulated results into visibility claims.
+See [BUILD_STATUS.md](BUILD_STATUS.md) for the implementation inventory and next-stage work.
 
-- Connect the brand's YouTube channel in **Data & Integrations** for live YouTube Search positions.
-- Set `SERPAPI_API_KEY` for Google AI Overview citation checks and related searches.
-- Set `OPENAI_API_KEY` and, optionally, `OPENAI_MODEL` for OpenAI web-search citation checks.
-- Set `GEMINI_API_KEY` and, optionally, `GEMINI_MODEL` for Gemini grounded-search citation checks.
+## License
 
-Without these credentials, Parallax still produces preview keyword and content opportunities from owned metadata. Visibility results are timestamped samples: model answers and search surfaces can vary by prompt, market, personalisation and time, so the tool does not represent a missing citation as universal absence or promise rankings.
-
-## Optional OpenAI commentary
-
-The deterministic mock commentary provider is active by default. Structured output contracts live under `src/lib/providers/llm.ts`; core scoring and diagnostics never depend on the model. `OPENAI_API_KEY` can already be used independently by AI Visibility's grounded web-search check.
-
-## Optional SMTP
-
-Preview delivery is active by default: Send Test creates the selected report attachments and records a preview delivery without contacting an external recipient. For real delivery, set `MAIL_PROVIDER=smtp`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` and `SMTP_FROM`. The Nodemailer adapter is active for both Send Test and the local schedule worker, and delivery outcomes are persisted.
-
-## Workspace login
-
-Local development accepts any valid email and a password with at least eight characters so the login flow can be tested without an identity provider. For a production run, set `PARALLAX_LOGIN_EMAIL`, `PARALLAX_LOGIN_PASSWORD` and a long random `PARALLAX_SESSION_SECRET` in `.env.local`. Production login fails closed until all three values are configured. Sessions are signed, stored in an HTTP-only cookie and expire after 12 hours, or 30 days when **Keep me signed in** is selected.
-
-## Data and privacy behavior
-
-- Demo data is synthetic and labeled.
-- Competitor views use public-only fields. The app never suggests access to private competitor retention, search, traffic-source or audience analytics.
-- Unsupported/suppressed owned metrics are represented as unavailable instead of estimated.
-- Internal notes default to exclusion from client reports.
-- `.env*`, runtime state and generated artifacts are ignored by git.
-
-## Architecture notes
-
-- UI: Next.js App Router, React, strict TypeScript, Tailwind, Recharts.
-- Validation: Zod at mutable route boundaries.
-- Data: opt-in deterministic five-brand seed for a zero-credential demo; persistent manual/live workspace; normalized Supabase/PostgreSQL schema for deployment.
-- Reporting: ExcelJS and a deterministic `pdf-lib` renderer, both driven by the same selected report period, metrics and sections. Playwright is used for the browser E2E suite; the report data/renderer boundary allows an HTML/Playwright PDF renderer to replace `pdf-lib` later.
-- Scheduling: small Node worker polling persisted schedules once per minute.
-- Providers: YouTube, Trends, LLM and Mail interfaces keep external services replaceable.
-
-See `BUILD_STATUS.md` for completed and next work.
+No open-source license has been granted. The source is available in this repository for portfolio review.
