@@ -1,0 +1,299 @@
+@import "tailwindcss";
+
+:root {
+  /* Parallax accent tokens. */
+  --accent: #6d4aff;
+  --accent-strong: #5635db;
+  --accent-soft: #f1edff;
+  --canvas: #f7f8fb;
+  --surface: #f4f5f7;
+  --ink: #172033;
+  --muted: #667085;
+  --border: #e8eaf0;
+  --border-strong: #d7dae3;
+  --positive: #14804a;
+  --positive-soft: #eaf8f0;
+  --attention: #b66a00;
+  --attention-soft: #fff7e8;
+  --critical: #c9363f;
+  --critical-soft: #fff0f1;
+}
+
+* {
+  box-sizing: border-box;
+}
+html {
+  background: var(--canvas);
+}
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+button,
+select,
+input,
+textarea {
+  font: inherit;
+}
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+::selection {
+  background: #ded5ff;
+}
+
+.page-title {
+  font-size: clamp(1.85rem, 3vw, 2.65rem);
+  line-height: 1.05;
+  font-weight: 760;
+  letter-spacing: -0.04em;
+}
+.page-subtitle {
+  margin-top: 0.65rem;
+  max-width: 48rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+.grid-auto-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #cfd3dc transparent;
+}
+
+.parallax-welcome {
+  position: relative;
+  display: grid;
+  min-height: 100svh;
+  place-items: center;
+  overflow: hidden;
+  background: #0c1020;
+  color: white;
+  transition:
+    opacity 450ms ease,
+    transform 450ms ease;
+}
+.parallax-welcome--leaving {
+  opacity: 0;
+  transform: scale(1.015);
+}
+.parallax-welcome__grid,
+.parallax-login__story-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(to bottom, black, transparent 88%);
+}
+.parallax-welcome__beam {
+  position: absolute;
+  width: 52vw;
+  height: 130vh;
+  background: linear-gradient(180deg, rgba(109, 74, 255, 0.62), rgba(109, 74, 255, 0));
+  filter: blur(58px);
+  opacity: 0.38;
+  transform: rotate(28deg);
+  animation: parallax-beam 5.5s ease-in-out infinite alternate;
+}
+.parallax-welcome__beam--one {
+  left: -21vw;
+  top: -42vh;
+}
+.parallax-welcome__beam--two {
+  right: -22vw;
+  bottom: -68vh;
+  animation-delay: -2.1s;
+}
+.parallax-welcome__content {
+  position: relative;
+  z-index: 2;
+  width: min(100% - 2rem, 1040px);
+  text-align: center;
+}
+.parallax-welcome__mark {
+  display: flex;
+  width: 72px;
+  height: 48px;
+  margin: 0 auto 2.5rem;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 7px;
+  animation: parallax-rise 700ms 120ms both;
+}
+.parallax-welcome__mark span {
+  display: block;
+  width: 11px;
+  border-radius: 999px;
+  background: linear-gradient(to top, #6d4aff, #c6baff);
+}
+.parallax-welcome__mark span:nth-child(1) {
+  height: 24px;
+}
+.parallax-welcome__mark span:nth-child(2) {
+  height: 46px;
+}
+.parallax-welcome__mark span:nth-child(3) {
+  height: 34px;
+}
+.parallax-welcome__eyebrow {
+  color: #bdb2ff;
+  font-size: 0.8rem;
+  font-weight: 750;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  animation: parallax-rise 650ms 300ms both;
+}
+.parallax-welcome h1 {
+  max-width: 940px;
+  margin: 1.25rem auto 0;
+  font-size: clamp(2.6rem, 7vw, 6.5rem);
+  font-weight: 720;
+  letter-spacing: -0.065em;
+  line-height: 0.98;
+  text-wrap: balance;
+  animation: parallax-rise 800ms 450ms both;
+}
+.parallax-welcome__brand {
+  display: flex;
+  margin-top: 2rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.9rem;
+  animation: parallax-rise 650ms 650ms both;
+}
+.parallax-welcome__brand span:first-child {
+  color: white;
+  font-weight: 750;
+}
+.parallax-welcome__continue {
+  position: absolute;
+  right: clamp(1.25rem, 4vw, 3.5rem);
+  bottom: 2.2rem;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  border: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.9rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+.parallax-welcome__continue:hover {
+  color: white;
+  transform: translateX(3px);
+}
+.parallax-welcome__progress {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+}
+.parallax-welcome__progress span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #6d4aff, #b8a8ff);
+  transform-origin: left;
+  animation: parallax-progress 3.1s linear both;
+}
+.parallax-login {
+  display: grid;
+  min-height: 100svh;
+  background: white;
+}
+.parallax-login__story {
+  position: relative;
+  display: none;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 72% 22%, rgba(109, 74, 255, 0.35), transparent 34%),
+    linear-gradient(145deg, #0d1224, #17142c 54%, #0f172a);
+  padding: clamp(2rem, 4vw, 4rem);
+  color: white;
+}
+.parallax-login__form-wrap {
+  display: grid;
+  place-items: center;
+  padding: clamp(2rem, 7vw, 5.5rem);
+  animation: parallax-form-in 650ms ease both;
+}
+
+@media (min-width: 1024px) {
+  .parallax-login {
+    grid-template-columns: minmax(0, 1.12fr) minmax(420px, 0.88fr);
+  }
+  .parallax-login__story {
+    display: block;
+  }
+}
+
+@keyframes parallax-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes parallax-beam {
+  from {
+    transform: rotate(28deg) translate3d(0, -2%, 0);
+  }
+  to {
+    transform: rotate(24deg) translate3d(5%, 5%, 0);
+  }
+}
+@keyframes parallax-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes parallax-form-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

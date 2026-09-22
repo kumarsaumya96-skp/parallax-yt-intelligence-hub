@@ -1,0 +1,29 @@
+# dependencies
+/node_modules
+/.pnpm-store
+
+# next
+/.next
+/out
+/playwright-report
+/test-results
+/work
+/outputs
+/supabase/.temp
+
+# local artifacts and state
+/data/runtime/*.json
+/public/generated/*
+!/public/generated/.gitkeep
+
+# secrets
+.env
+.env.local
+.env.*.local
+
+# misc
+*.log
+.DS_Store
+Thumbs.db
+*.tsbuildinfo
+next-env.d.ts
